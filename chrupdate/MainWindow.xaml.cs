@@ -21,12 +21,17 @@ namespace chrupdate
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Fields
         Communicator CBL = new Communicator();
+        #endregion
+
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        #region Events
         private void BtnUpdateNow_Click(object sender, RoutedEventArgs e)
         {
             if (CBL.UpdateBuild())
@@ -48,8 +53,9 @@ namespace chrupdate
 
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
-            string license = "Chromium Updater is Copyleft\n\nTHE CAKE-WARE LICENSE(Revision 2):\nGywerd wrote this file.  As long as you retain this notice you can do whatever you want with this stuff, if it don't violate national or international law. If we meet some day, and you think this stuff is worth it, you can buy me a cake or chocolate bar in return.\nSource can be found at https://github.com/gywerd/\n\nDaniel Giversen";
+            string license = "Chromium Updater is Copyleft\n\nTHE CAKE-WARE LICENSE(Revision 2):\nGywerd wrote this file.  As long as you retain this notice you can do whatever you want with this stuff, if it don't violate national or international law. If we meet some day, and you think this stuff is worth it, you can buy me a cake or chocolate bar in return.\n\nSource can be found at https://github.com/gywerd/Chromium-Updater \n\nDaniel Giversen";
             MessageBox.Show(license, "About Chromium Updater", MessageBoxButton.OK);
         }
+        #endregion
     }
 }

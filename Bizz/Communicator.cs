@@ -14,13 +14,20 @@ namespace Bizz
 {
     public class Communicator
     {
+        #region Constructors
+        /// <summary>
+        /// Empty constructor
+        /// </summary>
         public Communicator() { }
+        #endregion
 
-
-
+        #region Methods
+        /// <summary>
+        /// Retrieves latest build number
+        /// </summary>
+        /// <returns>string</returns>
         private string CheckVer()
         {
-            CleanFolder("LAST_CHANGE");
             WebClient client = new WebClient();
             Stream stream = client.OpenRead("https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/LAST_CHANGE");
             StreamReader reader = new StreamReader(stream);
@@ -28,6 +35,10 @@ namespace Bizz
             return content;
         }
 
+        /// <summary>
+        /// Cleans the C:\TEMO\Chromium folder
+        /// </summary>
+        /// <param name="fileName"></param>
         private void CleanFolder(string fileName)
         {
             DirectoryInfo di = new DirectoryInfo(@"C:\TEMP\Chromium");
@@ -38,32 +49,19 @@ namespace Bizz
                     file.Delete();
                 }
             }
-        }  
-
-
-        private void DownloadBuild()
-        {
-            CleanFolder("mini_installer.exe");
-            string latestVer = CheckVer();
-            string downloadURL = "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/" + latestVer + "/mini_installer.exe";
-            WebClient Client = new WebClient();
-            Client.DownloadFile(downloadURL, @"C:\TEMP\Chromium\mini_installer.exe");
         }
 
-        public string GetLicense()
-        {
-            StreamReader lic = File.OpenText("LICENSE");
-            StreamReader reader = new StreamReader("LICENSE");
-            string content = reader.ReadToEnd();
-            return content;
-        }
 
-        public bool UpdateBuild()
+        private bool DownloadBuild()
         {
             try
             {
-                DownloadBuild();
-                Process.Start(@"C:\TEMP\Chromium\mini_installer.exe");
+                EnsureDirectoriesExist();
+                CleanFolder("mini_installer.exe");
+                string latestVer = CheckVer();
+                string downloadURL = "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/" + latestVer + "/mini_installer.exe";
+                WebClient Client = new WebClient();
+                Client.DownloadFile(downloadURL, @"C:\TEMP\Chromium\mini_installer.exe");
                 return true;
             }
             catch (Exception)
@@ -71,5 +69,41 @@ namespace Bizz
                 return false;
             }
         }
+
+        /// <summary>
+        /// If the C:\TEMO\Chromium directory doesn't exist - create it.
+        /// </summary>
+        public void EnsureDirectoriesExist()
+        {
+            if (!System.IO.Directory.Exists(@"C:\TEMP\Chromium")) 
+            {
+                Directory.CreateDirectory(@"C:\TEMP\Chromium");
+            }
+        }
+
+        /// <summary>
+        /// Updates Chromium Build
+        /// </summary>
+        /// <returns></returns>
+        public bool UpdateBuild()
+        {
+            try
+            {
+                if (DownloadBuild())
+                {
+                    Process.Start(@"C:\TEMP\Chromium\mini_installer.exe");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        #endregion
     }
- }
+}
