@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
+using System.Windows;
 
 namespace Bizz
 {
@@ -49,10 +50,26 @@ namespace Bizz
             Client.DownloadFile(downloadURL, @"C:\TEMP\Chromium\mini_installer.exe");
         }
 
-        public void UpdateBuild()
+        public string GetLicense()
         {
-            DownloadBuild();
-            Process.Start(@"C:\TEMP\Chromium\mini_installer.exe");
+            StreamReader lic = File.OpenText("LICENSE");
+            StreamReader reader = new StreamReader("LICENSE");
+            string content = reader.ReadToEnd();
+            return content;
+        }
+
+        public bool UpdateBuild()
+        {
+            try
+            {
+                DownloadBuild();
+                Process.Start(@"C:\TEMP\Chromium\mini_installer.exe");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
  }
