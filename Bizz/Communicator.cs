@@ -19,6 +19,7 @@ namespace Bizz
 
         private string CheckVer()
         {
+            CleanFolder("LAST_CHANGE");
             WebClient client = new WebClient();
             Stream stream = client.OpenRead("https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/LAST_CHANGE");
             StreamReader reader = new StreamReader(stream);
@@ -26,12 +27,12 @@ namespace Bizz
             return content;
         }
 
-        private void CleanFolder()
+        private void CleanFolder(string fileName)
         {
-            DirectoryInfo di = new DirectoryInfo(@"C:\%userprofile%\Downloads\");
+            DirectoryInfo di = new DirectoryInfo(@"C:\TEMP\Chromium");
             foreach (FileInfo file in di.GetFiles())
             {
-                if (file.Name == "mini_installer.exe")
+                if (file.Name == fileName)
                 {
                     file.Delete();
                 }
@@ -41,17 +42,17 @@ namespace Bizz
 
         private void DownloadBuild()
         {
-            CleanFolder();
+            CleanFolder("mini_installer.exe");
             string latestVer = CheckVer();
             string downloadURL = "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/" + latestVer + "/mini_installer.exe";
             WebClient Client = new WebClient();
-            Client.DownloadFile(downloadURL, @"C:\%userprofile%\Downloads\mini_installer.exe");
+            Client.DownloadFile(downloadURL, @"C:\TEMP\Chromium\mini_installer.exe");
         }
 
         public void UpdateBuild()
         {
             DownloadBuild();
-            Process.Start(@"C:\%userprofile%\Downloads\mini_installer.exe");
+            Process.Start(@"C:\TEMP\Chromium\mini_installer.exe");
         }
     }
  }
